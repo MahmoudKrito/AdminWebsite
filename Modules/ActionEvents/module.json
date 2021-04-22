@@ -1,0 +1,13 @@
+{
+    "name": "ActionEvents",
+    "alias": "actionevents",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ActionEvents\\Providers\\ActionEventsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

@@ -1,0 +1,18 @@
+{
+    "Country": true,
+    "City": true,
+    "Area": true,
+    "Zone": true,
+    "Countries": true,
+    "Cities": true,
+    "Areas": true,
+    "Zones": true,
+    "Categories": true,
+    "Layouts": true,
+    "Genders": true,
+    "Currencies": true,
+    "ActionEvents": true,
+    "Roles": true,
+    "Permissions": true,
+    "Types": true
+}

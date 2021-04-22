@@ -1,0 +1,13 @@
+{
+    "name": "Zones",
+    "alias": "zones",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Zones\\Providers\\ZonesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

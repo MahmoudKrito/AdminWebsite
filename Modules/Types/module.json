@@ -1,0 +1,13 @@
+{
+    "name": "Types",
+    "alias": "types",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Types\\Providers\\TypesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

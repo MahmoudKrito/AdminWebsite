@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Countries\Entities\Country;
+
+class CountryPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        dd($user->can('index Country'));
+        return $user->can('index Country');
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Country  $country
+     * @return mixed
+     */
+    public function view(User $user, Country $country)
+    {
+        dd($user->can('index Country'));
+
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\Models\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Country  $country
+     * @return mixed
+     */
+    public function update(User $user, Country $country)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Country  $country
+     * @return mixed
+     */
+    public function delete(User $user, Country $country)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Country  $country
+     * @return mixed
+     */
+    public function restore(User $user, Country $country)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Country  $country
+     * @return mixed
+     */
+    public function forceDelete(User $user, Country $country)
+    {
+        //
+    }
+}

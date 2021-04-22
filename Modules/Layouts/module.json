@@ -1,0 +1,13 @@
+{
+    "name": "Layouts",
+    "alias": "layouts",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Layouts\\Providers\\LayoutsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
