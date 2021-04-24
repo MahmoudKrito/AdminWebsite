@@ -39,10 +39,10 @@ class AuthController extends Controller
                     return response()->json(['status' => 200, 'data' => UserResource::make($user), 'message' => '']);
                 }
             }
-            return response()->json(['status' => 400, 'message' => 'Something went wrong']);
+            return response()->json(['status' => 400, 'message' => 'Something went wrong', 'data' => $request]);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found'), 'data' => $request]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong'), 'data' => $request]);
         }
     }
 
@@ -54,13 +54,13 @@ class AuthController extends Controller
                 if ($user) {
                     return response()->json(['status' => 200, 'data' => UserResource::make($user)]);
                 } else {
-                    return response()->json(['status' => 400, 'message' => 'Not found']);
+                    return response()->json(['status' => 400, 'message' => 'Model not found']);
                 }
             }
-            return response()->json(['status' => 400, 'message' => 'Something went wrong']);
+            return response()->json(['status' => 400, 'message' => 'Something went wrong', 'data' => '']);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found')]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong')]);
         }
     }
 
@@ -85,10 +85,10 @@ class AuthController extends Controller
                 }
                 return response()->json(['status' => 200, 'message' => '', 'data' => UserResource::make($user)]);
             }
-            return response()->json(['status' => 400, 'message' => '']);
+            return response()->json(['status' => 400, 'message' => '', 'data' => $request]);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found'), 'data' => $request]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong'), 'data' => $request]);
         }
     }
 
@@ -107,10 +107,10 @@ class AuthController extends Controller
                     return response()->json(['status' => 200, 'message' => '', 'data' => UserResource::make($user)]);
                 }
             }
-            return response()->json(['status' => 400, 'message' => '']);
+            return response()->json(['status' => 400, 'message' => '', 'data' => $request]);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found'), 'data' => $request]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong'), 'data' => $request]);
         }
     }
 
@@ -123,7 +123,7 @@ class AuthController extends Controller
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found'), 'data' => $request]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong'), 'data' => $request]);
         }
     }
 
@@ -141,7 +141,7 @@ class AuthController extends Controller
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['status' => 400, 'message' => __('Model not found'), 'data' => $request]);
+            return response()->json(['status' => 400, 'message' => __('Something went wrong'), 'data' => $request]);
         }
     }
 }

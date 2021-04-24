@@ -13,7 +13,8 @@ class CreateCountriesTable extends Migration {
 			$table->string('name', 191)->unique()->nullable();
 			$table->string('name_ar', 191)->unique()->nullable();
 			$table->string('image', 191)->nullable();
-			$table->string('code', 5);
+			$table->string('code', 5)->nullable();
+			$table->string('phone_code', 191)->nullable();
 			$table->bigInteger('currency_id')->nullable();
 			$table->boolean('active')->default(1);
 			$table->timestamps();

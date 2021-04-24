@@ -26,6 +26,7 @@ class CountriesDatabaseSeeder extends Seeder
                 'name' => 'Egypt',
                 'name_ar' => 'مصر',
                 'code' => 'eg',
+                'phone_code' => '002',
                 'currency_id' => 1,
             ]);
         }

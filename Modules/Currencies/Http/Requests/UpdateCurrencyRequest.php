@@ -15,7 +15,7 @@ class UpdateCurrencyRequest extends FormRequest
     {
         return [
             'name' => 'nullable|max:191',
-            'name_ar' => 'nullable|max:191',
+//            'name_ar' => 'nullable|max:191',
             'symbol' => 'nullable|max:191',
         ];
     }

@@ -22,9 +22,9 @@ class CurrenciesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                $records = Currency::onlyTrashed()->latest()->paginate(9);
+                $records = Currency::onlyTrashed()->latest()->paginate(config('setting.paginate'));
             } else {
-                $records = Currency::latest()->paginate(9);
+                $records = Currency::latest()->paginate(config('setting.paginate'));
             }
             if ($records->count() > 0) {
                 return response()->json(
@@ -117,12 +117,18 @@ class CurrenciesController extends Controller
         try {
             $record = Currency::find($id);
             if ($record) {
+                $result = checkRelation($record, 'countries');
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->delete();
                 if ($del) {
                     return response()->json(['message' => __('Deleted Successfully'), 'data' => ''], 200);
                 } else {
                     return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
                 }
+
             } else {
                 return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
@@ -167,6 +173,11 @@ class CurrenciesController extends Controller
         try {
             $record = Currency::find($id);
             if ($record) {
+                $result = checkRelation($record, 'countries');
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->forceDelete();
                 if ($del) {
                     return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''], 200);

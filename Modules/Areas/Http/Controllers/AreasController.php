@@ -23,11 +23,18 @@ class AreasController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                $records = Area::onlyTrashed()->latest()->paginate(9);
+                if ($request->has('city_id') && $request->city_id) {
+                    $records = Area::onlyTrashed()->latest()->where('city_id', $request->city_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = Area::onlyTrashed()->latest()->paginate(config('setting.paginate'));
+                }
             } else {
-                $records = Area::latest()->paginate(9);
+                if ($request->has('city_id') && $request->city_id) {
+                    $records = Area::latest()->where('city_id', $request->city_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = Area::latest()->paginate(config('setting.paginate'));
+                }
             }
-//            dd($records->count());
             if ($records->count() > 0) {
                 return response()->json(['message' => __('Returned Successfully'), 'data' => AreaResource::collection($records)->response()->getData(true)],200);
             } else {
@@ -37,7 +44,6 @@ class AreasController extends Controller
             Log::error($e);
             return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
         }
-
     }
 
     /**
@@ -116,6 +122,12 @@ class AreasController extends Controller
         try {
             $record = Area::find($id);
             if ($record) {
+                //                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->delete();
                 if ($del) {
                     return response()->json(['message' => __('Deleted Successfully'), 'data' => ''],200);
@@ -166,6 +178,12 @@ class AreasController extends Controller
         try {
             $record = Area::find($id);
             if ($record) {
+                //                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->forceDelete();
                 if ($del) {
                     return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''],200);

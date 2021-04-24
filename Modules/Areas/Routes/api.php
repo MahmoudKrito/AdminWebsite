@@ -15,7 +15,7 @@ use Modules\Areas\Http\Controllers\AreasController;
 |
 */
 
-Route::group(['middleware' => 'auth:sanctum'], function(){
+Route::group(['middleware' => ['auth:sanctum', 'Locale']], function(){
     Route::group(['prefix' => 'areas'], function(){
         Route::get('/', [AreasController::class, 'index'])->name('areas.index');
         Route::get('/{id}', [AreasController::class, 'show'])->name('areas.show');

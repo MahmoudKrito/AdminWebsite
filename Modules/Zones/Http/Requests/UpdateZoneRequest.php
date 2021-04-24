@@ -15,7 +15,7 @@ class UpdateZoneRequest extends FormRequest
     {
         return [
             'name' => 'nullable|max:191',
-            'name_ar' => 'nullable|max:191',
+//            'name_ar' => 'nullable|max:191',
             'active' => 'nullable|boolean',
             'area_id' => 'nullable|exists:areas,id',
         ];

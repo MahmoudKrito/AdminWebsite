@@ -15,7 +15,7 @@ class UpdateAreaRequest extends FormRequest
     {
         return [
             'name' => 'nullable|max:191',
-            'name_ar' => 'nullable|max:191',
+//            'name_ar' => 'nullable|max:191',
             'active' => 'nullable|boolean',
             'city_id' => 'nullable|exists:cities,id',
         ];

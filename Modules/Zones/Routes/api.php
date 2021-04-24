@@ -15,7 +15,7 @@ use Modules\Zones\Http\Controllers\ZonesController;
 |
 */
 
-Route::group(['middleware' => 'auth:sanctum'], function(){
+Route::group(['middleware' => ['auth:sanctum', 'Locale']], function(){
     Route::group(['prefix' => 'zones'], function(){
         Route::get('/', [ZonesController::class, 'index'])->name('zones.index');
         Route::get('/{id}', [ZonesController::class, 'show'])->name('zones.show');

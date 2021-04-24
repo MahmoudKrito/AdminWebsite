@@ -14,16 +14,37 @@ class Country extends Model
 
     protected $table = 'countries';
     protected $dates = ['deleted_at'];
-    protected $fillable = array('name', 'name_ar', 'image', 'code', 'currency_id', 'active');
+    protected $fillable = array('name', 'name_ar', 'image', 'code', 'phone_code', 'currency_id', 'active');
 
     public function cities()
     {
         return $this->hasMany(City::class);
     }
 
+//    public function sellers()
+//    {
+//        return $this->hasMany(Seller::class);
+//    }
+//
+//    public function clients()
+//    {
+//        return $this->hasMany(Client::class);
+//    }
+
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function setNameAttribute($value)
+    {
+        $key = getExistAttribute('name');
+        $this->attributes[$key] = $value;
+    }
+
+    public function getNameAttribute($value)
+    {
+        return getExistData('name', $value, $this);
     }
 
 //    protected static function newFactory()

@@ -15,8 +15,8 @@ class CreateCurrencyRequest extends FormRequest
     {
         return [
             'name' => 'required|max:191',
-            'name_ar' => 'required|max:191',
-            'symbol' => 'required|max:191',
+//            'name_ar' => 'required|max:191',
+//            'symbol' => 'required|max:191',
         ];
     }
 

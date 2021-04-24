@@ -14,7 +14,7 @@ use Modules\Currencies\Http\Controllers\CurrenciesController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => ['auth:sanctum', 'Locale']], function () {
     Route::group(['prefix' => 'currencies'], function () {
         Route::get('/', [CurrenciesController::class, 'index'])->name('currencies.index');
         Route::get('/{id}', [CurrenciesController::class, 'show'])->name('currencies.show');

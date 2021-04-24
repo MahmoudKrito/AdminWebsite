@@ -15,7 +15,7 @@ class CreateCityRequest extends FormRequest
     {
         return [
             'name' => 'required|max:191',
-            'name_ar' => 'required|max:191',
+//            'name_ar' => 'required|max:191',
             'active' => 'nullable|boolean',
             'country_id' => 'required|exists:countries,id',
         ];

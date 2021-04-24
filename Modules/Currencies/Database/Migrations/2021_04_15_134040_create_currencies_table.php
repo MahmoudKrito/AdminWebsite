@@ -10,7 +10,7 @@ class CreateCurrenciesTable extends Migration {
 	{
 		Schema::create('currencies', function(Blueprint $table) {
 			$table->id();
-			$table->string('name', 191)->nullable();
+			$table->string('name', 191);
 			$table->string('name_ar', 191)->nullable();
 			$table->string('symbol', 191)->nullable();
 			$table->timestamps();

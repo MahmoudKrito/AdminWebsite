@@ -22,16 +22,24 @@ class ZonesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                $records = Zone::onlyTrashed()->latest()->paginate(9);
+                if ($request->has('area_id') && $request->area_id) {
+                    $records = Zone::onlyTrashed()->latest()->where('area_id', $request->area_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = Zone::onlyTrashed()->latest()->paginate(config('setting.paginate'));
+                }
             } else {
-                $records = Zone::latest()->paginate(9);
+                if ($request->has('area_id') && $request->area_id) {
+                    $records = Zone::latest()->where('area_id', $request->area_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = Zone::latest()->paginate(config('setting.paginate'));
+                }
             }
             if ($records->count() > 0) {
                 return response()->json(
                     [
                         'message' => __('Returned Successfully'),
                         'data' => ZoneResource::collection($records)->response()->getData(true)
-                    ],200);
+                    ], 200);
             } else {
                 return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
@@ -117,6 +125,12 @@ class ZonesController extends Controller
         try {
             $record = Zone::find($id);
             if ($record) {
+                //                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->delete();
                 if ($del) {
                     return response()->json(['message' => __('Deleted Successfully'), 'data' => ''], 200);
@@ -167,6 +181,12 @@ class ZonesController extends Controller
         try {
             $record = Zone::find($id);
             if ($record) {
+                //                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->forceDelete();
                 if ($del) {
                     return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''], 200);

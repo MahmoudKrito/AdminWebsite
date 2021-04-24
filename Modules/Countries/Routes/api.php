@@ -14,7 +14,7 @@ use Modules\Countries\Http\Controllers\CountryController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => ['auth:sanctum', 'Locale']], function () {
     Route::group(['prefix' => 'countries'], function () {
         Route::get('/', [CountryController::class, 'index'])->name('countries.index');
         Route::get('/{id}', [CountryController::class, 'show'])->name('countries.show');

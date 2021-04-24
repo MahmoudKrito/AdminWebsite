@@ -15,9 +15,10 @@ class UpdateCountryRequest extends FormRequest
     {
         return [
             'name' => 'nullable|max:191',
-            'name_ar' => 'nullable|max:191',
-            'code' => 'nullable|max:5',
-            'image' => 'nullable|max:191|mimes:jpg,jpeg,png,gif',
+//            'name_ar' => 'nullable|max:191',
+//            'code' => 'nullable|max:5',
+//            'image' => 'nullable|max:191|mimes:jpg,jpeg,png,gif',
+            'phone_code' => 'nullable|max:191',
             'active' => 'nullable|boolean',
             'currency_id' => 'nullable|exists:currencies,id',
         ];

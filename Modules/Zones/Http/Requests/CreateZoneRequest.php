@@ -15,7 +15,7 @@ class CreateZoneRequest extends FormRequest
     {
         return [
             'name' => 'required|max:191',
-            'name_ar' => 'required|max:191',
+//            'name_ar' => 'required|max:191',
             'active' => 'nullable|boolean',
             'area_id' => 'required|exists:areas,id',
         ];

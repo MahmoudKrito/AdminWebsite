@@ -23,22 +23,31 @@ class CitiesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                $records = City::onlyTrashed()->latest()->paginate(9);
+                if ($request->has('country_id') && $request->country_id) {
+                    $records = City::onlyTrashed()->latest()->where('country_id', $request->country_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = City::onlyTrashed()->latest()->paginate(config('setting.paginate'));
+                }
             } else {
-                $records = City::latest()->paginate(9);
+                if ($request->has('country_id') && $request->country_id) {
+                    $records = City::latest()->where('country_id', $request->country_id)->paginate(config('setting.paginate'));
+                } else {
+                    $records = City::latest()->paginate(config('setting.paginate'));
+                }
             }
+
             if ($records->count() > 0) {
                 return response()->json(
                     [
                         'message' => __('Returned Successfully'),
                         'data' => CityResource::collection($records)->response()->getData(true)
-                    ],200);
+                    ], 200);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
         }
     }
 
@@ -52,13 +61,13 @@ class CitiesController extends Controller
         try {
             $store = City::create($request->all());
             if ($store) {
-                return response()->json(['message' => __('Inserted Successfully'), 'data' => ''],400);
+                return response()->json(['message' => __('Inserted Successfully'), 'data' => ''], 400);
             } else {
-                return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+                return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
         }
     }
 
@@ -72,13 +81,13 @@ class CitiesController extends Controller
         try {
             $record = City::find($id);
             if ($record) {
-                return response()->json(['message' => __('Changed Successfully'), 'data' => CityResource::make($record)],200);
+                return response()->json(['message' => __('Changed Successfully'), 'data' => CityResource::make($record)], 200);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
         }
     }
 
@@ -95,16 +104,16 @@ class CitiesController extends Controller
             if ($record) {
                 $update = $record->update($request->except('_method', '_token'));
                 if ($update) {
-                    return response()->json(['message' => __('Updated Successfully'), 'data' => ''],200);
+                    return response()->json(['message' => __('Updated Successfully'), 'data' => ''], 200);
                 } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
                 }
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
         }
     }
 
@@ -118,18 +127,24 @@ class CitiesController extends Controller
         try {
             $record = City::find($id);
             if ($record) {
+//                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->delete();
                 if ($del) {
-                    return response()->json(['message' => __('Deleted Successfully'), 'data' => ''],200);
+                    return response()->json(['message' => __('Deleted Successfully'), 'data' => ''], 200);
                 } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
                 }
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
         }
     }
 
@@ -145,16 +160,16 @@ class CitiesController extends Controller
             if ($record) {
                 $restore = $record->restore();
                 if ($restore) {
-                    return response()->json(['message' => __('Restored Successfully'), 'data' => ''],200);
+                    return response()->json(['message' => __('Restored Successfully'), 'data' => ''], 200);
                 } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
                 }
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
         }
     }
 
@@ -168,18 +183,24 @@ class CitiesController extends Controller
         try {
             $record = City::find($id);
             if ($record) {
+//                $result = checkRelation($record, ['clients', 'sellers']);
+                $result = 0;
+                if ($result) {
+                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                }
+
                 $del = $record->forceDelete();
                 if ($del) {
-                    return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''],200);
+                    return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''], 200);
                 } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
                 }
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
         }
     }
 
@@ -196,13 +217,13 @@ class CitiesController extends Controller
                 $record->update([
                     'active' => $request->status
                 ]);
-                return response()->json(['message' => __('Changed Successfully'), 'data' => ''],200);
+                return response()->json(['message' => __('Changed Successfully'), 'data' => ''], 200);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
         }
     }
 }

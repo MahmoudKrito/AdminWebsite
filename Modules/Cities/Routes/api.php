@@ -15,7 +15,7 @@ use Modules\Cities\Http\Controllers\CitiesController;
 |
 */
 
-Route::group(['middleware' => 'auth:sanctum'], function(){
+Route::group(['middleware' => ['auth:sanctum', 'Locale']], function(){
     Route::group(['prefix' => 'cities'], function(){
         Route::get('/', [CitiesController::class, 'index'])->name('cities.index');
         Route::get('/{id}', [CitiesController::class, 'show'])->name('cities.show');

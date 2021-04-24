@@ -15,7 +15,7 @@ class CreateAreaRequest extends FormRequest
     {
         return [
             'name' => 'required|max:191',
-            'name_ar' => 'required|max:191',
+//            'name_ar' => 'required|max:191',
             'active' => 'nullable|boolean',
             'city_id' => 'required|exists:cities,id',
         ];

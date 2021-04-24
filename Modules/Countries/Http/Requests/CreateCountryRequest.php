@@ -15,9 +15,10 @@ class CreateCountryRequest extends FormRequest
     {
         return [
             'name' => 'required|max:191',
-            'name_ar' => 'required|max:191',
-            'code' => 'required|max:5',
-            'image' => 'required|max:191|mimes:jpg,jpeg,png,gif',
+//            'name_ar' => 'required|max:191',
+//            'code' => 'required|max:5',
+//            'image' => 'required|max:191|mimes:jpg,jpeg,png,gif',
+            'phone_code' => 'required|max:191',
             'active' => 'nullable|boolean',
             'currency_id' => 'required|exists:currencies,id',
         ];
