@@ -15,7 +15,7 @@ class CurrenciesServiceProvider extends ServiceProvider
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'currencies';
+    protected $moduleNameLower = 'Currencies';
 
     /**
      * Boot the application events.

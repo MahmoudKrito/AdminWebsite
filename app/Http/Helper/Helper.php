@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
@@ -29,6 +28,17 @@ if (!function_exists('deleteImage')) {
             if ($delete) return 1;
         }
         return 0;
+    }
+}
+
+if (!function_exists('jsonResponse')) {
+    function jsonResponse($message, $data, $status)
+    {
+        $res = [
+            'msg' => $message,
+            'data' => $data,
+        ];
+        return response()->json($res, $status);
     }
 }
 
@@ -91,4 +101,3 @@ if (!function_exists('checkRelation')) {
         }
     }
 }
-
