@@ -3,20 +3,21 @@
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
-if (!function_exists('webpUploadImage')) {
-    function webpUploadImage($upload, $path, $resize_width = null, $resize_height = null)
+if (!function_exists('uploadImage')) {
+    function uploadImage($upload, $path, $resize_width = null, $resize_height = null)
     {
-        if (!file_exists($path)) {
-            mkdir($path, 0755, true);
+        $directoryName = 'public/' . $path;
+        if (!file_exists(storage_path($directoryName))) {
+            mkdir(storage_path($directoryName), 0755, true);
         }
         $filename = rand() . time() . '.' . $upload->getClientOriginalExtension();
-        $filePath = '/' . $path . '/' . $filename;
+        $filePath = $directoryName . '/' . $filename;
         if ($resize_width || $resize_height) {
             $img = Image::make($upload)->resize($resize_width, $resize_height)->encode($upload->getClientOriginalExtension(), 100);
         } else {
             $img = Image::make($upload);
         }
-        $img->save(public_path($filePath));
+        $img->save(storage_path($filePath));
         return $filePath;
     }
 }
@@ -36,7 +37,7 @@ if (!function_exists('jsonResponse')) {
     function jsonResponse($message = '', $model = '', $data = '', $status)
     {
         $res = [
-            'msg' => $message?__($model . "::general." . $message):'',
+            'msg' => $message ? __($model . "::general." . $message) : '',
             'data' => $data,
         ];
         return response()->json($res, $status);
