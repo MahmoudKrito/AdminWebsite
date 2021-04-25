@@ -1,11 +1,13 @@
 <?php
 
 return [
-    'create_success' => 'Inserted Successfully',
-    'update_success' => '',
-    'delete_success' => '',
-    'delete_invalid' => '',
-    'restore_success' => '',
-    'force_delete_success' => '',
-    'not_found' => '',
+    'create_success' => 'Currency Inserted Successfully',
+    'update_success' => 'Currency Updated Successfully',
+    'delete_success' => 'Currency Deleted Successfully',
+    'delete_invalid' => 'Currency Deleted Invalid',
+    'restore_success' => 'Currency Restored Successfully',
+    'force_delete_success' => 'Currency Force Deleted Successfully',
+    'not_found' => 'Currency Not Founded',
+    'empty' => 'Data not founded',
+    'wrong' => 'Something went wrong',
 ];

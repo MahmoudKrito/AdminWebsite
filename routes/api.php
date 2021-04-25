@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,11 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('/update', [AuthController::class, 'updateProfile'])->name('admin.profile.update');
         });
     });
+
+    Route::fallback(function() {
+        return response()->json(['msg' => __("general.not_found")],Response::HTTP_NOT_FOUND);
+    });
+
 });
 
 

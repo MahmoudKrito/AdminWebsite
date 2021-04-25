@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
@@ -32,10 +33,10 @@ if (!function_exists('deleteImage')) {
 }
 
 if (!function_exists('jsonResponse')) {
-    function jsonResponse($message, $data, $status)
+    function jsonResponse($message = '', $model = '', $data = '', $status)
     {
         $res = [
-            'msg' => $message,
+            'msg' => $message?__($model . "::general." . $message):'',
             'data' => $data,
         ];
         return response()->json($res, $status);

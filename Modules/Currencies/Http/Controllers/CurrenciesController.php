@@ -10,6 +10,7 @@ use Modules\Currencies\Entities\Currency;
 use Modules\Currencies\Http\Requests\CreateCurrencyRequest;
 use Modules\Currencies\Http\Requests\UpdateCurrencyRequest;
 use Modules\Currencies\Transformers\CurrencyResource;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class CurrenciesController extends Controller
@@ -27,16 +28,13 @@ class CurrenciesController extends Controller
                 $records = Currency::latest()->paginate(config('setting.paginate'));
             }
             if ($records->count() > 0) {
-                return jsonResponse(
-                         __("Currencies::general.create_success"),
-                         CurrencyResource::collection($records)->response()->getData(true)
-                    , 200);
+                return jsonResponse('', 'Currencies', CurrencyResource::collection($records), Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('empty', 'Currencies', '', Response::HTTP_OK);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  $request, 400);
+            return jsonResponse('wrong', 'Currencies', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -49,14 +47,10 @@ class CurrenciesController extends Controller
     {
         try {
             $store = Currency::create($request->all());
-            if ($store) {
-                return jsonResponse( __('Inserted Successfully'),  '', 200);
-            } else {
-                return jsonResponse( __('Something went wrong'),  '', 400);
-            }
+            return jsonResponse("create_success", 'Currencies', '', Response::HTTP_OK);
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  $request, 400);
+            return jsonResponse('wrong', 'Currencies', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -70,13 +64,13 @@ class CurrenciesController extends Controller
         try {
             $record = Currency::find($id);
             if ($record) {
-                return jsonResponse( __('Changed Successfully'),  CurrencyResource::make($record), 200);
+                return jsonResponse('', 'Currencies', CurrencyResource::make($record), Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('not_found', 'Currencies', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  '', 400);
+            return jsonResponse('wrong', 'Currencies', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -92,17 +86,13 @@ class CurrenciesController extends Controller
             $record = Currency::find($id);
             if ($record) {
                 $update = $record->update($request->except('_method', '_token'));
-                if ($update) {
-                    return jsonResponse( __('Updated Successfully'),  '', 200);
-                } else {
-                    return jsonResponse( __('Something went wrong'),  '', 400);
-                }
+                return jsonResponse('update_success', 'Currencies', '', Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('not_found', 'Currencies', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  $request, 400);
+            return jsonResponse('wrong', 'Currencies', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -118,22 +108,16 @@ class CurrenciesController extends Controller
             if ($record) {
                 $result = checkRelation($record, 'countries');
                 if ($result) {
-                    return jsonResponse( __('You can not delete this record'),  '', 400);
+                    return jsonResponse('delete_invalid', 'Currencies', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->delete();
-                if ($del) {
-                    return jsonResponse( __('Deleted Successfully'),  '', 200);
-                } else {
-                    return jsonResponse( __('Something went wrong'),  '', 400);
-                }
-
+                return jsonResponse('delete_success', 'Currencies', '', Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('not_found', 'Currencies', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  '', 400);
+            return jsonResponse('wrong', 'Currencies', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -148,17 +132,13 @@ class CurrenciesController extends Controller
             $record = Currency::onlyTrashed()->find($id);
             if ($record) {
                 $restore = $record->restore();
-                if ($restore) {
-                    return jsonResponse( __('Restored Successfully'),  '', 200);
-                } else {
-                    return jsonResponse( __('Something went wrong'),  '', 400);
-                }
+                return jsonResponse('restore_success', 'Currencies', '', Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('not_found', 'Currencies', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  '', 400);
+            return jsonResponse('wrong', 'Currencies', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -174,21 +154,16 @@ class CurrenciesController extends Controller
             if ($record) {
                 $result = checkRelation($record, 'countries');
                 if ($result) {
-                    return jsonResponse( __('You can not delete this record'),  '', 400);
+                    return jsonResponse('delete_invalid', 'Currencies', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->forceDelete();
-                if ($del) {
-                    return jsonResponse( __('Force Deleted Successfully'),  '', 200);
-                } else {
-                    return jsonResponse( __('Something went wrong'),  '', 400);
-                }
+                return jsonResponse('force_delete_success', 'Currencies', '', Response::HTTP_OK);
             } else {
-                return jsonResponse( __('Model not found'),  '', 400);
+                return jsonResponse('not_found', 'Currencies', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return jsonResponse( __('Something went wrong'),  '', 400);
+            return jsonResponse('wrong', 'Currencies', '', Response::HTTP_BAD_REQUEST);
         }
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
 return [
-    'create_success' => 'Inserted Successfully',
-    'update_success' => 'Updated Successfully',
-    'delete_success' => 'Deleted Successfully',
-    'delete_invalid' => 'Deleted Invalid',
-    'restore_success' => 'Restored Successfully',
-    'force_delete_success' => 'Force Deleted Successfully',
-    'not_found' => 'Not Founded',
-    'wrong' => 'Something went wrong',
+    'create_success' => 'تم اضافت العمله بنجاح',
+    'update_success' => 'تم تعديل العمله بنجاح',
+    'delete_success' => 'تم حذف العمله بنجاح',
+    'delete_invalid' => 'لا يمكن حذف العمله ',
+    'restore_success' => 'تم استعاده العمله بنجاح',
+    'force_delete_success' => 'تم حذف العمله نهائيا بنجاح',
+    'not_found' => 'لم يتم العثور عليه',
+    'wrong' => 'حدث خظا ما حاول مره اخرى',
+    'empty' => 'لا توجد بيانات متاحه',
 ];
