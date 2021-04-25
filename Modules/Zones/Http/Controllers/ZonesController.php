@@ -10,6 +10,7 @@ use Modules\Zones\Entities\Zone;
 use Modules\Zones\Http\Requests\CreateZoneRequest;
 use Modules\Zones\Http\Requests\UpdateZoneRequest;
 use Modules\Zones\Transformers\ZoneResource;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class ZonesController extends Controller
@@ -22,30 +23,18 @@ class ZonesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                if ($request->has('area_id') && $request->area_id) {
-                    $records = Zone::onlyTrashed()->latest()->where('area_id', $request->area_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = Zone::onlyTrashed()->latest()->paginate(config('setting.paginate'));
-                }
+                $records = Zone::onlyTrashed()->latest()->paginate(config('setting.paginate'));
             } else {
-                if ($request->has('area_id') && $request->area_id) {
-                    $records = Zone::latest()->where('area_id', $request->area_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = Zone::latest()->paginate(config('setting.paginate'));
-                }
+                $records = Zone::latest()->paginate(config('setting.paginate'));
             }
             if ($records->count() > 0) {
-                return response()->json(
-                    [
-                        'message' => __('Returned Successfully'),
-                        'data' => ZoneResource::collection($records)->response()->getData(true)
-                    ], 200);
+                return jsonResponse('', 'Zones', ZoneResource::collection($records), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('empty', 'Zones', '', Response::HTTP_OK);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Zones', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -58,14 +47,10 @@ class ZonesController extends Controller
     {
         try {
             $store = Zone::create($request->all());
-            if ($store) {
-                return response()->json(['message' => __('Inserted Successfully'), 'data' => ''], 200);
-            } else {
-                return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-            }
+            return jsonResponse("create_success", 'Zones', '', Response::HTTP_OK);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Zones', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -79,13 +64,13 @@ class ZonesController extends Controller
         try {
             $record = Zone::find($id);
             if ($record) {
-                return response()->json(['message' => __('Changed Successfully'), 'data' => ZoneResource::make($record)], 200);
+                return jsonResponse('', 'Zones', ZoneResource::make($record), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Zones', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -101,17 +86,13 @@ class ZonesController extends Controller
             $record = Zone::find($id);
             if ($record) {
                 $update = $record->update($request->except('_method', '_token'));
-                if ($update) {
-                    return response()->json(['message' => __('Updated Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('update_success', 'Zones', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Zones', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -125,24 +106,19 @@ class ZonesController extends Controller
         try {
             $record = Zone::find($id);
             if ($record) {
-                //                $result = checkRelation($record, ['clients', 'sellers']);
+//                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Zones', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->delete();
-                if ($del) {
-                    return response()->json(['message' => __('Deleted Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('delete_success', 'Zones', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Zones', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -157,17 +133,13 @@ class ZonesController extends Controller
             $record = Zone::onlyTrashed()->find($id);
             if ($record) {
                 $restore = $record->restore();
-                if ($restore) {
-                    return response()->json(['message' => __('Restored Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('restore_success', 'Zones', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Zones', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -181,24 +153,19 @@ class ZonesController extends Controller
         try {
             $record = Zone::find($id);
             if ($record) {
-                //                $result = checkRelation($record, ['clients', 'sellers']);
+//                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Zones', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->forceDelete();
-                if ($del) {
-                    return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('force_delete_success', 'Zones', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Zones', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -215,13 +182,13 @@ class ZonesController extends Controller
                 $record->update([
                     'active' => $request->status
                 ]);
-                return response()->json(['message' => __('Changed Successfully'), 'data' => ''], 200);
+                return jsonResponse('change_success', 'Zones', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Zones', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Zones', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 }

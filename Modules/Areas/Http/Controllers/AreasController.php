@@ -2,6 +2,7 @@
 
 namespace Modules\Areas\Http\Controllers;
 
+use App\Http\Helper\Setting;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Modules\Areas\Entities\Area;
 use Modules\Areas\Http\Requests\CreateAreaRequest;
 use Modules\Areas\Http\Requests\UpdateAreaRequest;
 use Modules\Areas\Transformers\AreaResource;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class AreasController extends Controller
@@ -23,26 +25,18 @@ class AreasController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                if ($request->has('city_id') && $request->city_id) {
-                    $records = Area::onlyTrashed()->latest()->where('city_id', $request->city_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = Area::onlyTrashed()->latest()->paginate(config('setting.paginate'));
-                }
+                $records = Area::onlyTrashed()->latest()->paginate(Setting::paginate);
             } else {
-                if ($request->has('city_id') && $request->city_id) {
-                    $records = Area::latest()->where('city_id', $request->city_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = Area::latest()->paginate(config('setting.paginate'));
-                }
+                $records = Area::latest()->paginate(Setting::paginate);
             }
             if ($records->count() > 0) {
-                return response()->json(['message' => __('Returned Successfully'), 'data' => AreaResource::collection($records)->response()->getData(true)],200);
+                return jsonResponse('', 'Areas', AreaResource::collection($records)->response()->getData(true), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('empty', 'Areas', '', Response::HTTP_OK);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return jsonResponse('wrong', 'Areas', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -55,14 +49,10 @@ class AreasController extends Controller
     {
         try {
             $store = Area::create($request->all());
-            if ($store) {
-                return response()->json(['message' => __('Inserted Successfully'), 'data' => ''],200);
-            } else {
-                return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
-            }
+            return jsonResponse("create_success", 'Areas', '', Response::HTTP_OK);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return jsonResponse('wrong', 'Areas', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -76,13 +66,13 @@ class AreasController extends Controller
         try {
             $record = Area::find($id);
             if ($record) {
-                return response()->json(['message' => __('Changed Successfully'), 'data' => AreaResource::make($record)],200);
+                return jsonResponse('', 'Areas', AreaResource::make($record), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong')],400);
+            return jsonResponse('wrong', 'Areas', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -98,17 +88,13 @@ class AreasController extends Controller
             $record = Area::find($id);
             if ($record) {
                 $update = $record->update($request->except('_method', '_token'));
-                if ($update) {
-                    return response()->json(['message' => __('Updated Successfully'), 'data' => ''],200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
-                }
+                return jsonResponse('update_success', 'Areas', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return jsonResponse('wrong', 'Areas', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -122,24 +108,19 @@ class AreasController extends Controller
         try {
             $record = Area::find($id);
             if ($record) {
-                //                $result = checkRelation($record, ['clients', 'sellers']);
+//                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Areas', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->delete();
-                if ($del) {
-                    return response()->json(['message' => __('Deleted Successfully'), 'data' => ''],200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
-                }
+                return jsonResponse('delete_success', 'Areas', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong')],400);
+            return jsonResponse('wrong', 'Areas', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -154,17 +135,13 @@ class AreasController extends Controller
             $record = Area::onlyTrashed()->find($id);
             if ($record) {
                 $restore = $record->restore();
-                if ($restore) {
-                    return response()->json(['message' => __('Restored Successfully'), 'data' => ''],200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
-                }
+                return jsonResponse('restore_success', 'Areas', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong')],400);
+            return jsonResponse('wrong', 'Areas', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -178,24 +155,19 @@ class AreasController extends Controller
         try {
             $record = Area::find($id);
             if ($record) {
-                //                $result = checkRelation($record, ['clients', 'sellers']);
+//                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Areas', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->forceDelete();
-                if ($del) {
-                    return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''],200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''],400);
-                }
+                return jsonResponse('force_delete_success', 'Areas', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong')],400);
+            return jsonResponse('wrong', 'Areas', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -212,13 +184,13 @@ class AreasController extends Controller
                 $record->update([
                     'active' => $request->status
                 ]);
-                return response()->json(['message' => __('Changed Successfully'), 'data' => ''],200);
+                return jsonResponse('change_success', 'Areas', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''],400);
+                return jsonResponse('not_found', 'Areas', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request],400);
+            return jsonResponse('wrong', 'Areas', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 }

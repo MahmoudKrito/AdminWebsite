@@ -2,6 +2,7 @@
 
 namespace Modules\Currencies\Http\Controllers;
 
+use App\Http\Helper\Setting;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -23,12 +24,12 @@ class CurrenciesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                $records = Currency::onlyTrashed()->latest()->paginate(config('setting.paginate'));
+                $records = Currency::onlyTrashed()->latest()->paginate(Setting::paginate);
             } else {
-                $records = Currency::latest()->paginate(config('setting.paginate'));
+                $records = Currency::latest()->paginate(Setting::paginate);
             }
             if ($records->count() > 0) {
-                return jsonResponse('', 'Currencies', CurrencyResource::collection($records), Response::HTTP_OK);
+                return jsonResponse('', 'Currencies', CurrencyResource::collection($records)->response()->getData(true), Response::HTTP_OK);
             } else {
                 return jsonResponse('empty', 'Currencies', '', Response::HTTP_OK);
             }

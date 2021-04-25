@@ -1,23 +1,23 @@
 <?php
 
+use App\Http\Helper\Setting;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
 if (!function_exists('uploadImage')) {
     function uploadImage($upload, $path, $resize_width = null, $resize_height = null)
     {
-        $directoryName = 'public/' . $path;
-        if (!file_exists(storage_path($directoryName))) {
-            mkdir(storage_path($directoryName), 0755, true);
+        if (!file_exists(storage_path($path))) {
+            mkdir(storage_path($path), 0755, true);
         }
         $filename = rand() . time() . '.' . $upload->getClientOriginalExtension();
-        $filePath = $directoryName . '/' . $filename;
+        $filePath = $path . '/' . $filename;
         if ($resize_width || $resize_height) {
             $img = Image::make($upload)->resize($resize_width, $resize_height)->encode($upload->getClientOriginalExtension(), 100);
         } else {
             $img = Image::make($upload);
         }
-        $img->save(storage_path($filePath));
+        $img->save(storage_path('app/public/' .$filePath));
         return $filePath;
     }
 }
@@ -68,7 +68,7 @@ if (!function_exists('getExistData')) {
         if ($result) {
             return $result;
         } else {
-            foreach (config('setting.languages') as $lang) {
+            foreach (Setting::languages as $lang) {
                 if ($lang != $current_lang) {
                     if ($lang != 'en') {
                         $value2 = $colName . '_' . $lang;

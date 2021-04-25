@@ -2,6 +2,7 @@
 
 namespace Modules\Cities\Http\Controllers;
 
+use App\Http\Helper\Setting;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -10,6 +11,7 @@ use Modules\Cities\Entities\City;
 use Modules\Cities\Http\Requests\CreateCityRequest;
 use Modules\Cities\Http\Requests\UpdateCityRequest;
 use Modules\Cities\Transformers\CityResource;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 
@@ -23,31 +25,18 @@ class CitiesController extends Controller
     {
         try {
             if ($request->has('onlyTrashed') && $request->onlyTrashed) {
-                if ($request->has('country_id') && $request->country_id) {
-                    $records = City::onlyTrashed()->latest()->where('country_id', $request->country_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = City::onlyTrashed()->latest()->paginate(config('setting.paginate'));
-                }
+                $records = City::onlyTrashed()->latest()->paginate(Setting::paginate);
             } else {
-                if ($request->has('country_id') && $request->country_id) {
-                    $records = City::latest()->where('country_id', $request->country_id)->paginate(config('setting.paginate'));
-                } else {
-                    $records = City::latest()->paginate(config('setting.paginate'));
-                }
+                $records = City::latest()->paginate(Setting::paginate);
             }
-
             if ($records->count() > 0) {
-                return response()->json(
-                    [
-                        'message' => __('Returned Successfully'),
-                        'data' => CityResource::collection($records)->response()->getData(true)
-                    ], 200);
+                return jsonResponse('', 'Cities', CityResource::collection($records)->response()->getData(true), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('empty', 'Cities', '', Response::HTTP_OK);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Cities', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -60,14 +49,10 @@ class CitiesController extends Controller
     {
         try {
             $store = City::create($request->all());
-            if ($store) {
-                return response()->json(['message' => __('Inserted Successfully'), 'data' => ''], 400);
-            } else {
-                return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-            }
+            return jsonResponse("create_success", 'Cities', '', Response::HTTP_OK);
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Cities', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -81,13 +66,13 @@ class CitiesController extends Controller
         try {
             $record = City::find($id);
             if ($record) {
-                return response()->json(['message' => __('Changed Successfully'), 'data' => CityResource::make($record)], 200);
+                return jsonResponse('', 'Cities', CityResource::make($record), Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Cities', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -103,17 +88,13 @@ class CitiesController extends Controller
             $record = City::find($id);
             if ($record) {
                 $update = $record->update($request->except('_method', '_token'));
-                if ($update) {
-                    return response()->json(['message' => __('Updated Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('update_success', 'Cities', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Cities', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -130,21 +111,16 @@ class CitiesController extends Controller
 //                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Cities', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->delete();
-                if ($del) {
-                    return response()->json(['message' => __('Deleted Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('delete_success', 'Cities', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Cities', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -159,17 +135,13 @@ class CitiesController extends Controller
             $record = City::onlyTrashed()->find($id);
             if ($record) {
                 $restore = $record->restore();
-                if ($restore) {
-                    return response()->json(['message' => __('Restored Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('restore_success', 'Cities', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Cities', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -186,21 +158,16 @@ class CitiesController extends Controller
 //                $result = checkRelation($record, ['clients', 'sellers']);
                 $result = 0;
                 if ($result) {
-                    return response()->json(['message' => __('You can not delete this record'), 'data' => ''], 400);
+                    return jsonResponse('delete_invalid', 'Cities', '', Response::HTTP_BAD_REQUEST);
                 }
-
                 $del = $record->forceDelete();
-                if ($del) {
-                    return response()->json(['message' => __('Force Deleted Successfully'), 'data' => ''], 200);
-                } else {
-                    return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
-                }
+                return jsonResponse('force_delete_success', 'Cities', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => ''], 400);
+            return jsonResponse('wrong', 'Cities', '', Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -217,13 +184,13 @@ class CitiesController extends Controller
                 $record->update([
                     'active' => $request->status
                 ]);
-                return response()->json(['message' => __('Changed Successfully'), 'data' => ''], 200);
+                return jsonResponse('change_success', 'Cities', '', Response::HTTP_OK);
             } else {
-                return response()->json(['message' => __('Model not found'), 'data' => ''], 400);
+                return jsonResponse('not_found', 'Cities', '', Response::HTTP_BAD_REQUEST);
             }
         } catch (Throwable $e) {
             Log::error($e);
-            return response()->json(['message' => __('Something went wrong'), 'data' => $request], 400);
+            return jsonResponse('wrong', 'Cities', $request, Response::HTTP_BAD_REQUEST);
         }
     }
 }
